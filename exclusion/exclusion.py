@@ -1,12 +1,19 @@
 import mysql.connector
 import json
-import Flask
+from flask import Flask
+import requests
 
 
 app = Flask(__name__)
 
-@app.route('/advertiser_campaigns=<advertiser_campaigns>&publisher_campaign=<publisher_campaign>')
-def exlusion(advertiser_campaigns, publisher_campaign):
+
+def askTargetting(ad_campaign, zip_code):
+    req = requests.get('127.0.0.1:5000'+'/advertiser_campaigns={}&zip_code={}'.format(ad_campaign, zip_code))
+    return req
+
+
+@app.route('/advertiser_campaigns=<advertiser_campaigns>&publisher_campaign=<publisher_campaign>&=zip_code=<zip_code>')
+def exlusion(advertiser_campaigns, publisher_campaign, zip_code):
 
     query = ("SELECT advertiser_campaigns.id"
     " FROM publisher_campaigns JOIN publishers ON publisher_campaigns.publisher_id = publishers.id"
@@ -25,7 +32,12 @@ def exlusion(advertiser_campaigns, publisher_campaign):
     rv = cursor.fetchall()
     json_data=[]
     for result in rv:
-        json_data.append(dict(zip(row_headers,result)))
+        json_data.append(result[0])
 
     cnx.close()
-    return json.dumps(json_data)
+    print (json_data)
+    str_campaings = ','.join(str(e) for e in json_data)
+
+    target = askTargetting(str_campaings, zip_code)
+
+    return target
