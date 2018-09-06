@@ -11,22 +11,20 @@ def targeting(advertiser_campaigns, zip_code):
 
     str_ad_list = ','.join("'"+str(e)+"'" for e in ad_list)
 
-    print(advertiser_campaigns)
-    print(zip_code)
     query = ("SELECT id FROM advertiser_campaigns WHERE advertiser_campaigns.id IN " + '(' + str_ad_list + ')' + " AND (targeting IS NULL OR targeting = %s)")
 
-    print (query)
     cnx = mysql.connector.connect(user='papumaster', password='password',
                                   host='papu.ccafjo7btexd.us-east-1.rds.amazonaws.com',
                                   database='mariapapu')
     cursor = cnx.cursor()
     cursor.execute(query,(zip_code,))
-    print(cursor._executed)
-    row_headers=[x[0] for x in cursor.description] #this will extract row headers
+
+
     rv = cursor.fetchall()
-    json_data=[]
+    data=[]
     for result in rv:
-        json_data.append(dict(zip(row_headers,result)))
+        data.append(result[0])
 
     cnx.close()
-    return json.dumps(json_data)
+
+    return ','.join(str(e) for e in data)
