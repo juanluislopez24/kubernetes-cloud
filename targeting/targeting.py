@@ -26,5 +26,9 @@ def targeting(advertiser_campaigns, zip_code):
         data.append(result[0])
 
     cnx.close()
+    str_target = ','.join(str(e) for e in data)
 
-    return ','.join(str(e) for e in data)
+    ret_dict = {}
+    ret_dict['targeting'] = str_target
+
+    return json.dumps(ret_dict)
