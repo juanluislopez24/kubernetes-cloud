@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 
 def askTargetting(ad_campaign, zip_code):
-    req = requests.get('127.0.0.1:5000'+'/advertiser_campaigns={}&zip_code={}'.format(ad_campaign, zip_code))
+    req = requests.get('targeting'+'/advertiser_campaigns={}&zip_code={}'.format(ad_campaign, zip_code))
     return req
 
 
