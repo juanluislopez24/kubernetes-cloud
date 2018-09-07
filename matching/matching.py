@@ -23,9 +23,12 @@ def matching(category):
 
     for result in rv:
         json_data.append(dict(zip(row_headers,result)))
-        ids_list= ids_list+ str(result[0])
-        bid_list = bid_list +str(result[1])
+        ids_list= ids_list + str(result[0]) +','
+        bid_list = bid_list + str(result[1]) +','
 
+    ids_list = ids_list[:-1]
+    bid_list = bid_list[:-1]
+    
     dd = {"campaign_ids": ids_list,
             "bids": bid_list}
     cnx.close()
