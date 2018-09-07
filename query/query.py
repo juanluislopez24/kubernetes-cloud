@@ -66,21 +66,21 @@ def query(category, publisher_campaign, maximum, zip_code):
         str_bid = ",".join(bid_list)
 
         ranking_result = askRanking(str_campaign, str_bid, maximum)
-
+        #{campaigns:"12,13,31", bids:"2.0,4.1,1.5"}
 
         ads_result = askAds(matching_result["campaigns"])
-
+        ad_list = []
         for ad in ads_result:
             impression_id = str(uuid.uuid1())
 
-            query_obj["ads"] = [
+             ad_list.append(
                 {"impression_id": impression_id,
                 "headline": ,
                 "description":,
                 "click_url":
                 }
-            ]
-
+            )
+        query_obj["ads"] = ad_list
 
         pricing_result = askPricing(matching_result["campaigns"], matching_result["bids"], publisher_campaign)
         return True
