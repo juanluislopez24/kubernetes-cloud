@@ -7,22 +7,22 @@ import uuid
 app = Flask(__name__)
 
 def askAds(ad_camp):
-    req = requests.get('ads'+'/advertiser_campaigns={}'.format(ad_camp))
+    req = requests.get('localhost:8081'+'/advertiser_campaigns={}'.format(ad_camp))
     return req
 def askExclusion(ad_camp, pub_camp):
-    req = requests.get('exclusion'+'/advertiser_campaigns={}&publisher_campaign={}'.format(ad_camp, pub_camp))
+    req = requests.get('localhost:8082'+'/advertiser_campaigns={}&publisher_campaign={}'.format(ad_camp, pub_camp))
     return req
 def askTargeting(ad_camp, zipi):
-    req = requests.get('targeting'+'/advertiser_campaigns={}&zip_code={}'.format(ad_camp, zipi))
+    req = requests.get('localhost:8083'+'/advertiser_campaigns={}&zip_code={}'.format(ad_camp, zipi))
     return req
 def askMatching(category):
-    req = requests.get('matching'+'/category={}'.format(category))
+    req = requests.get('localhost:8084'+'/category={}'.format(category))
     return req
 def askRanking(ad_camp, bids, maxi):
-    req = requests.get('ranking'+'/advertiser_campaigns={}&advertiser_campaigns_bids={}&maximum={}'.format(ad_camp, bids, maxi))
+    req = requests.get('localhost:8085'+'/advertiser_campaigns={}&advertiser_campaigns_bids={}&maximum={}'.format(ad_camp, bids, maxi))
     return req
 def askPricing(ad_camp, bids, pub_camp):
-    req = requests.get('pricing'+'/advertiser_campaigns={}&advertiser_campaigns_bids={}&publisher_campaign={}'.format(ad_camp, bids, maxi))
+    req = requests.get('localhost:8086'+'/advertiser_campaigns={}&advertiser_campaigns_bids={}&publisher_campaign={}'.format(ad_camp, bids, maxi))
     return req
 def checkData(cate, pub, maximum, zipi):
     if(type(cate) is int and type(pub) is int and type(maximum) is int and type(zipi) is int):
@@ -83,7 +83,10 @@ def query(category, publisher_campaign, maximum, zip_code):
         query_obj["ads"] = ad_list
 
         pricing_result = askPricing(ranking_result["campaigns"], ranking_result["bids"], publisher_campaign)
-        
+
         return json.dumps(query_obj)
     else:
         return ("Parametros invalidos")
+
+if _name_ == "_main_":
+    app.run(host='0.0.0.0', port=8080)
