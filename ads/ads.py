@@ -26,3 +26,6 @@ def ads(advertiser_campaigns):
     
     cnx.close()
     return json.dumps(results)
+
+if _name_ == "_main_":
+    app.run(host='0.0.0.0', port=8081)

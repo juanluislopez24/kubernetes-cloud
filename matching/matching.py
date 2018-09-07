@@ -33,3 +33,6 @@ def matching(category):
             "bids": bid_list}
     cnx.close()
     return json.dumps(dd)
+
+if _name_ == "_main_":
+    app.run(host='0.0.0.0', port=8084)

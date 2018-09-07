@@ -34,3 +34,7 @@ def ranking(advertiser_campaigns, advertiser_campaigns_bids, maximum):
     ret_dict['bid'] = str_bid
 
     return json.dumps(ret_dict)
+
+if _name_ == "_main_":
+    app.run(host='0.0.0.0', port=8085)
+
