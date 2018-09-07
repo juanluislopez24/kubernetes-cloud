@@ -18,8 +18,15 @@ def matching(category):
     row_headers=[x[0] for x in cursor.description] #this will extract row headers
     rv = cursor.fetchall()
     json_data=[]
+    ids_list=[]
+    bid_list=[]
+
     for result in rv:
         json_data.append(dict(zip(row_headers,result)))
+        ids_list.append(result[0])
+        bid_list.append(result[1])
 
+    dd = {"campaign_ids": ids_list,
+            "bids": bid_list}
     cnx.close()
-    return json.dumps(json_data)
+    return json.dumps(dd)
