@@ -42,6 +42,9 @@ def query(category, publisher_campaign, maximum, zip_code):
         ads_result = askAds(matching_result["campaigns"])
         pricing_result = askPricing(matching_result["campaigns"], matching_result["bids"], publisher_campaign)
         return True
+
+
+
     else:   
         return ("Parametros invalidos")
 
