@@ -33,5 +33,5 @@ def targeting(advertiser_campaigns, zip_code):
 
     return json.dumps(ret_dict)
 
-if _name_ == "_main_":
-    app.run(host='0.0.0.0', port=8083)
+if __name__ == '__main__':
+      app.run(host='0.0.0.0', port=8083)

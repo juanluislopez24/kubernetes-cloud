@@ -36,6 +36,6 @@ def exlusion(advertiser_campaigns, publisher_campaign):
 
     return json.dumps(ret_dict)
 
-if _name_ == "_main_":
-    app.run(host='0.0.0.0', port=8082)
+if __name__ == '__main__':
+      app.run(host='0.0.0.0', port=8082)
 

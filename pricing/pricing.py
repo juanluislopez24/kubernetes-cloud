@@ -27,5 +27,5 @@ def pricing(advertiser_campaigns, advertiser_campaigns_bids, publisher_campaign)
     json_data.append(obj)
     return json.dumps(json_data)
 
-if _name_ == "_main_":
-    app.run(host='0.0.0.0', port=8086)
+if __name__ == '__main__':
+      app.run(host='0.0.0.0', port=8086)

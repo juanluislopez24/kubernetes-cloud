@@ -35,6 +35,6 @@ def ranking(advertiser_campaigns, advertiser_campaigns_bids, maximum):
 
     return json.dumps(ret_dict)
 
-if _name_ == "_main_":
-    app.run(host='0.0.0.0', port=8085)
+if __name__ == '__main__':
+      app.run(host='0.0.0.0', port=8085)
 
