@@ -22,5 +22,7 @@ def pricing(advertiser_campaigns, advertiser_campaigns_bids, publisher_campaign)
         json_data.append(dict(zip(row_headers,result)))
 
     cnx.close()
-    print(json_data)
+    obj = {}
+    obj['advertiser_campaigns'] = advertiser_campaigns
+    json_data.append(obj)
     return json.dumps(json_data)
