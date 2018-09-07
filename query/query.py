@@ -39,9 +39,9 @@ def joinPapu(exclusion,targeting):
 #http://localhost:8080/category=1&publisher_campaign=88&maximum=3&zip_code=ALL
 @app.route('/category=<category>&publisher_campaign=<publisher_campaign>&maximum=<maximum>&zip_code=<zip_code>')
 def query(category, publisher_campaign, maximum, zip_code):
-    print(type(category))
-    print(publisher_campaign)
-    print(zip_code)
+    # print(category)
+    # print(publisher_campaign)
+    # print(zip_code)
     if(True):
 
         query_obj = {}
@@ -50,38 +50,45 @@ def query(category, publisher_campaign, maximum, zip_code):
         query_obj["header"] = {"query_id":query_id}
 
 
-        matching_result = askMatching(category)
+        matching_result = json.loads(askMatching(category))
         #{campaigns:"12,13,31", bids:"2.0,4.1,1.5"}
-        print(matching_result)
-        campaigns_list = matching_result["campaigns"].split(',')
+        print(type(matching_result))
+        print(matching_result["campaign_ids"])
+        campaigns_list = matching_result["campaign_ids"].split(',')
         bid_list = matching_result["bids"].split(',')
 
-        exclusion_result = askExclusion(matching_result["campaigns"], publisher_campaign)
+        exclusion_result = askExclusion(matching_result["campaign_ids"], publisher_campaign)
         #{exclusions:""}
+        print('excl res')
         print(exclusion_result)
-        targeting_result = askTargeting(matching_result["campaigns"], zip_code)
-        #{targeting:""}
+        targeting_result = askTargeting(matching_result["campaign_ids"], zip_code)
+        print('target res')
         print(targeting_result)
-        innerJoined = joinPapu(exclusion_result["exclusions"].split(','),targeting_result["targeting"].split(','))
+        #{targeting:""}
+        innerJoined = joinPapu(json.loads(exclusion_result)["exclusions"].split(','),json.loads(targeting_result)["targeting"].split(','))
         # lista de IDs [""]
         print(innerJoined)
+        print(campaigns_list)
+        new_campaigns = []
+        new_bids = []
         for i in range(0,len(campaigns_list)):
-            if campaigns_list[i] not in innerJoined:
-                del campaigns_list[i]
-                del bid_list[i]
+            print(i, campaigns_list[i])
+            if campaigns_list[i] in innerJoined:
+                new_campaigns.append(campaigns_list[i])
+                new_bids.append(bid_list[i])
 
-        str_campaign = ",".join(campaigns_list)
-        str_bid = ",".join(bid_list)
+        str_campaign = ",".join(new_campaigns)
+        str_bid = ",".join(new_bids)
 
         ranking_result = askRanking(str_campaign, str_bid, maximum)
         #{campaigns:"12,13,31", bids:"2.0,4.1,1.5"}
         print(ranking_result)
-        ads_result = askAds(ranking_result["campaigns"])
-        print(ads_result)
+        ads_result = ast.literal_eval(askAds(json.loads(ranking_result)["campaigns"]))
         ad_list = []
+        print(ads_result)
         for ad in ads_result:
             impression_id = str(uuid.uuid1())
-
+            print(ad)
             ad_list.append(
                 {"impression_id": impression_id,
                 "headline": ad["headline"],
@@ -90,9 +97,9 @@ def query(category, publisher_campaign, maximum, zip_code):
                 }
             )
         query_obj["ads"] = ad_list
-        print(query_obj)
-        pricing_result = askPricing(ranking_result["campaigns"], ranking_result["bids"], publisher_campaign)
-        print(pricing_result)
+
+        pricing_result = askPricing(json.loads(ranking_result)["campaigns"], json.loads(ranking_result)["bid"], publisher_campaign)
+
         return json.dumps(query_obj)
     else:
         return ("Parametros invalidos")
