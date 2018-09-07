@@ -6,8 +6,8 @@ import requests
 
 app = Flask(__name__)
 
-@app.route('/advertiser_campaigns=<advertiser_campaigns>&publisher_campaign=<publisher_campaign>&=zip_code=<zip_code>')
-def exlusion(advertiser_campaigns, publisher_campaign, zip_code):
+@app.route('/advertiser_campaigns=<advertiser_campaigns>&publisher_campaign=<publisher_campaign>')
+def exlusion(advertiser_campaigns, publisher_campaign):
 
     query = ("SELECT advertiser_campaigns.id"
     " FROM publisher_campaigns JOIN publishers ON publisher_campaigns.publisher_id = publishers.id"

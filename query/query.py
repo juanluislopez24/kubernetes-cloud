@@ -35,6 +35,7 @@ def query(category, publisher_campaign, maximum, zip_code):
     # print(publisher_campaign)
     # print(zip_code)
     if(checkData(category, publisher_campaign, maximum, zip_code)==True):
+        #{campaigns:"", bids:""}
         matching_result= askMatching(category)
         exclusion_result = askExclusion(matching_result["campaigns"], publisher_campaign)
         targeting_result = askTargeting(matching_result["campaigns"], zip_code)
