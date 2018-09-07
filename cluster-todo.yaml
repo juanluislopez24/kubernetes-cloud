@@ -1,6 +1,316 @@
 apiVersion: v1
 kind: Service
 metadata:
+  name: ads
+  labels:
+    app: ads
+    tier: backend
+    role: ads-role
+spec:
+  ports:
+    # the port that this service should serve on
+  - port: 5000
+  selector:
+    app: ads
+    tier: backend
+    role: ads-role
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: ads
+  # these labels can be applied automatically
+  # from the labels in the pod template if not set
+  labels:
+    app: ads
+    role: ads-role
+    tier: backend
+spec:
+  # this replicas value is default
+  # modify it according to your case
+  replicas: 1
+  # selector can be applied automatically
+  # from the labels in the pod template if not set
+  # selector:
+  #   app: guestbook
+  #   role: slave
+  #   tier: backend
+  template:
+    metadata:
+      labels:
+        app: ads
+        role: ads-role
+        tier: backend
+    spec:
+      containers:
+      - name: ads-role
+        image: ads
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        env:
+        - name: GET_HOSTS_FROM
+          value: dns
+          # If your cluster config does not include a dns service, then to
+          # instead access an environment variable to find the master
+          # service's host, comment out the 'value: dns' line above, and
+          # uncomment the line below.
+          # value: env
+        ports:
+        - containerPort: 5000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: exclusion
+  labels:
+    app: exclusion
+    tier: backend
+    role: exclusion-role
+spec:
+  ports:
+    # the port that this service should serve on
+  - port: 5000
+  selector:
+    app: exclusion
+    tier: backend
+    role: exclusion-role
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: exclusion
+  # these labels can be applied automatically
+  # from the labels in the pod template if not set
+  labels:
+    app: exclusion
+    role: exclusion-role
+    tier: backend
+spec:
+  # this replicas value is default
+  # modify it according to your case
+  replicas: 1
+  # selector can be applied automatically
+  # from the labels in the pod template if not set
+  # selector:
+  #   app: guestbook
+  #   role: slave
+  #   tier: backend
+  template:
+    metadata:
+      labels:
+        app: exclusion
+        role: exclusion-role
+        tier: backend
+    spec:
+      containers:
+      - name: exclusion-role
+        image: exclusion
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        env:
+        - name: GET_HOSTS_FROM
+          value: dns
+          # If your cluster config does not include a dns service, then to
+          # instead access an environment variable to find the master
+          # service's host, comment out the 'value: dns' line above, and
+          # uncomment the line below.
+          # value: env
+        ports:
+        - containerPort: 5000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: matching
+  labels:
+    app: matching
+    tier: backend
+    role: matching-role
+spec:
+  ports:
+    # the port that this service should serve on
+  - port: 5000
+  selector:
+    app: matching
+    tier: backend
+    role: matching-role
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: matching
+  # these labels can be applied automatically
+  # from the labels in the pod template if not set
+  labels:
+    app: matching
+    role: matching-role
+    tier: backend
+spec:
+  # this replicas value is default
+  # modify it according to your case
+  replicas: 1
+  # selector can be applied automatically
+  # from the labels in the pod template if not set
+  # selector:
+  #   app: guestbook
+  #   role: slave
+  #   tier: backend
+  template:
+    metadata:
+      labels:
+        app: matching
+        role: matching-role
+        tier: backend
+    spec:
+      containers:
+      - name: matching-role
+        image: matching
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        env:
+        - name: GET_HOSTS_FROM
+          value: dns
+          # If your cluster config does not include a dns service, then to
+          # instead access an environment variable to find the master
+          # service's host, comment out the 'value: dns' line above, and
+          # uncomment the line below.
+          # value: env
+        ports:
+        - containerPort: 5000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pricing
+  labels:
+    app: pricing
+    tier: backend
+    role: pricing-role
+spec:
+  ports:
+    # the port that this service should serve on
+  - port: 5000
+  selector:
+    app: pricing
+    tier: backend
+    role: pricing-role
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: pricing
+  # these labels can be applied automatically
+  # from the labels in the pod template if not set
+  labels:
+    app: pricing
+    role: pricing-role
+    tier: backend
+spec:
+  # this replicas value is default
+  # modify it according to your case
+  replicas: 1
+  # selector can be applied automatically
+  # from the labels in the pod template if not set
+  # selector:
+  #   app: guestbook
+  #   role: slave
+  #   tier: backend
+  template:
+    metadata:
+      labels:
+        app: pricing
+        role: pricing-role
+        tier: backend
+    spec:
+      containers:
+      - name: pricing-role
+        image: pricing
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        env:
+        - name: GET_HOSTS_FROM
+          value: dns
+          # If your cluster config does not include a dns service, then to
+          # instead access an environment variable to find the master
+          # service's host, comment out the 'value: dns' line above, and
+          # uncomment the line below.
+          # value: env
+        ports:
+        - containerPort: 5000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ranking
+  labels:
+    app: ranking
+    tier: backend
+    role: ranking-role
+spec:
+  ports:
+    # the port that this service should serve on
+  - port: 5000
+  selector:
+    app: ranking
+    tier: backend
+    role: ranking-role
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: ranking
+  # these labels can be applied automatically
+  # from the labels in the pod template if not set
+  labels:
+    app: ranking
+    role: ranking-role
+    tier: backend
+spec:
+  # this replicas value is default
+  # modify it according to your case
+  replicas: 1
+  # selector can be applied automatically
+  # from the labels in the pod template if not set
+  # selector:
+  #   app: guestbook
+  #   role: slave
+  #   tier: backend
+  template:
+    metadata:
+      labels:
+        app: ranking
+        role: ranking-role
+        tier: backend
+    spec:
+      containers:
+      - name: ranking-role
+        image: ranking
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        env:
+        - name: GET_HOSTS_FROM
+          value: dns
+          # If your cluster config does not include a dns service, then to
+          # instead access an environment variable to find the master
+          # service's host, comment out the 'value: dns' line above, and
+          # uncomment the line below.
+          # value: env
+        ports:
+        - containerPort: 5000
+---
+apiVersion: v1
+kind: Service
+metadata:
   name: targeting
   labels:
     app: targeting
@@ -44,7 +354,7 @@ spec:
     spec:
       containers:
       - name: targeting-role
-        image: gcr.io/google_samples/gb-redisslave:v1
+        image: targeting
         resources:
           requests:
             cpu: 100m
@@ -102,7 +412,7 @@ spec:
     spec:
       containers:
       - name: query_py
-        image: gcr.io/google_samples/gb-query:v3
+        image: query
         resources:
           requests:
             cpu: 100m

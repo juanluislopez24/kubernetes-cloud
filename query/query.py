@@ -28,22 +28,22 @@ def askRanking(ad_camp, bids, maxi):
 def askPricing(ad_camp, bids, pub_camp):
     req = session.get('http://ec2-34-229-61-200.compute-1.amazonaws.com:8086'+'/advertiser_campaigns={}&advertiser_campaigns_bids={}&publisher_campaign={}'.format(ad_camp, bids, pub_camp))
     return req.json()
-def checkData(cate, pub, maximum, zipi):
-    if(type(int(cate)) is int and type(int(pub)) is int and type(int(maximum)) is int and type(int(zipi)) is int):
-        return True
-    else:
-        return False
+def checkData(cate, pub, zipi, maximum):
+    if(len(cate) != 0 and len(pub) != 0 and len(zipi) != 0 and len(maximum)):
+        if(int(cate) and int(pub) and int(zipi) and int(maximum)):
+            return True
+    return False
 
 def joinPapu(exclusion,targeting):
     return list(set(exclusion) & set(targeting))
 #http://localhost:8080/category=1&publisher_campaign=88&maximum=3&zip_code=ALL
-@app.route('/category=<category>&publisher_campaign=<publisher_campaign>&maximum=<maximum>&zip_code=<zip_code>')
-def query(category, publisher_campaign, maximum, zip_code):
+@app.route('/category=<category>&publisher_campaign=<publisher_campaign>&zip_code=<zip_code>&maximum=<maximum>')
+def query(category, publisher_campaign, zip_code, maximum='100'):
     # print(category)
     # print(publisher_campaign)
     # print(zip_code)
     print (maximum)
-    if(True):
+    if(checkData(category, publisher_campaign, zip_code, maximum)):
 
         query_obj = {}
         query_id = str(uuid.uuid1())
