@@ -13,17 +13,24 @@ def ranking(advertiser_campaigns, advertiser_campaigns_bids, maximum):
     for i in range(0,len(ad)):
         obj = {}
         obj['campaign'] = ad[i]
-        obj['bid'] = int(bid[i])
+        obj['bid'] = float(bid[i])
         objlist.append(obj)
 
     sorted_ad = sorted(objlist, key = lambda i: i['bid'], reverse=True)
+    print(sorted_ad)
+    campaign_list = []
+    bid_list = []
+    for i in range(0,len(sorted_ad)):
+        campaign_list.append(sorted_ad[i]["campaign"])
+        bid_list.append(sorted_ad[i]["bid"]) 
 
-    ad_list = []
-    for dic in sorted_ad:
-        ad_list.append(dic['campaign'])
+    print(campaign_list)
+    print(bid_list)
 
-    str_ad_list = ','.join(str(e) for e in ad_list[0:max])
+    str_campaings = ','.join(str(e) for e in campaign_list[0:max])
+    str_bid = ','.join(str(e) for e in bid_list[0:max])
     ret_dict = {}
-    ret_dict['ranking'] = str_ad_list
+    ret_dict['campaigns'] = str_campaings
+    ret_dict['bid'] = str_bid
 
     return json.dumps(ret_dict)
