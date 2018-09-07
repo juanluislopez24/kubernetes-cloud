@@ -26,7 +26,7 @@ def askRanking(ad_camp, bids, maxi):
     req = session.get('http://localhost:8085'+'/advertiser_campaigns={}&advertiser_campaigns_bids={}&maximum={}'.format(ad_camp, bids, maxi))
     return req.json()
 def askPricing(ad_camp, bids, pub_camp):
-    req = session.get('http://localhost:8086'+'/advertiser_campaigns={}&advertiser_campaigns_bids={}&publisher_campaign={}'.format(ad_camp, bids, maxi))
+    req = session.get('http://localhost:8086'+'/advertiser_campaigns={}&advertiser_campaigns_bids={}&publisher_campaign={}'.format(ad_camp, bids, pub_camp))
     return req.json()
 def checkData(cate, pub, maximum, zipi):
     if(type(int(cate)) is int and type(int(pub)) is int and type(int(maximum)) is int and type(int(zipi)) is int):
@@ -42,6 +42,7 @@ def query(category, publisher_campaign, maximum, zip_code):
     # print(category)
     # print(publisher_campaign)
     # print(zip_code)
+    print (maximum)
     if(True):
 
         query_obj = {}
@@ -50,7 +51,7 @@ def query(category, publisher_campaign, maximum, zip_code):
         query_obj["header"] = {"query_id":query_id}
 
 
-        matching_result = json.loads(askMatching(category))
+        matching_result = askMatching(category)
         #{campaigns:"12,13,31", bids:"2.0,4.1,1.5"}
         print(type(matching_result))
         print(matching_result["campaign_ids"])
@@ -65,7 +66,7 @@ def query(category, publisher_campaign, maximum, zip_code):
         print('target res')
         print(targeting_result)
         #{targeting:""}
-        innerJoined = joinPapu(json.loads(exclusion_result)["exclusions"].split(','),json.loads(targeting_result)["targeting"].split(','))
+        innerJoined = joinPapu(exclusion_result["exclusions"].split(','),targeting_result["targeting"].split(','))
         # lista de IDs [""]
         print(innerJoined)
         print(campaigns_list)
@@ -79,11 +80,13 @@ def query(category, publisher_campaign, maximum, zip_code):
 
         str_campaign = ",".join(new_campaigns)
         str_bid = ",".join(new_bids)
-
+        print (maximum)
+        if (maximum == None):
+            maximum = 10
         ranking_result = askRanking(str_campaign, str_bid, maximum)
         #{campaigns:"12,13,31", bids:"2.0,4.1,1.5"}
         print(ranking_result)
-        ads_result = ast.literal_eval(askAds(json.loads(ranking_result)["campaigns"]))
+        ads_result = askAds(ranking_result["campaigns"])
         ad_list = []
         print(ads_result)
         for ad in ads_result:
@@ -98,7 +101,7 @@ def query(category, publisher_campaign, maximum, zip_code):
             )
         query_obj["ads"] = ad_list
 
-        pricing_result = askPricing(json.loads(ranking_result)["campaigns"], json.loads(ranking_result)["bid"], publisher_campaign)
+        pricing_result = askPricing(ranking_result["campaigns"], ranking_result["bid"], publisher_campaign)
 
         return json.dumps(query_obj)
     else:
