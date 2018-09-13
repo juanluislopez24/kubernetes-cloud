@@ -44,7 +44,7 @@ spec:
     spec:
       containers:
       - name: ads-role
-        image: ads
+        image: juanluislopez/ads
         resources:
           requests:
             cpu: 100m
@@ -106,7 +106,7 @@ spec:
     spec:
       containers:
       - name: exclusion-role
-        image: exclusion
+        image: juanluislopez/exclusion
         resources:
           requests:
             cpu: 100m
@@ -168,7 +168,7 @@ spec:
     spec:
       containers:
       - name: matching-role
-        image: matching
+        image: juanluislopez/matching
         resources:
           requests:
             cpu: 100m
@@ -230,7 +230,7 @@ spec:
     spec:
       containers:
       - name: pricing-role
-        image: pricing
+        image: juanluislopez/pricing
         resources:
           requests:
             cpu: 100m
@@ -292,7 +292,7 @@ spec:
     spec:
       containers:
       - name: ranking-role
-        image: ranking
+        image: juanluislopez/ranking
         resources:
           requests:
             cpu: 100m
@@ -354,7 +354,7 @@ spec:
     spec:
       containers:
       - name: targeting-role
-        image: targeting
+        image: juanluislopez/targeting
         resources:
           requests:
             cpu: 100m
@@ -412,7 +412,7 @@ spec:
     spec:
       containers:
       - name: query_py
-        image: query
+        image: juanluislopez/query
         resources:
           requests:
             cpu: 100m
