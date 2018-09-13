@@ -8,6 +8,8 @@ app = Flask(__name__)
 
 @app.route('/advertiser_campaigns=<advertiser_campaigns>&publisher_campaign=<publisher_campaign>')
 def exlusion(advertiser_campaigns, publisher_campaign):
+    campaigns = advertiser_campaigns.split(',')
+    #print("campaigns: ", campaigns)
 
     query = ("SELECT advertiser_campaigns.id"
     " FROM publisher_campaigns JOIN publishers ON publisher_campaigns.publisher_id = publishers.id"
@@ -29,7 +31,16 @@ def exlusion(advertiser_campaigns, publisher_campaign):
 
     cnx.close()
 
-    str_campaings = ','.join(str(e) for e in data)
+    #print(data)
+    new_data = []
+    for i in campaigns:
+        for j in data:
+            if int(i) != int(j):
+                new_data.append(i)
+
+    print(new_data)
+    #str_campaings = ','.join(str(e) for e in data)
+    str_campaings = ','.join(str(e) for e in new_data)
 
     ret_dict = {}
     ret_dict['exclusions'] = str_campaings
@@ -38,4 +49,3 @@ def exlusion(advertiser_campaigns, publisher_campaign):
 
 if __name__ == '__main__':
       app.run(host='0.0.0.0', port=8082)
-
