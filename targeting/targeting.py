@@ -4,7 +4,7 @@ from flask import Flask
 
 app = Flask(__name__)
 
-@app.route('/advertiser_campaigns=<advertiser_campaigns>&zip_code=<zip_code>')
+@app.route('/targeting/advertiser_campaigns=<advertiser_campaigns>&zip_code=<zip_code>')
 def targeting(advertiser_campaigns, zip_code):
 
     ad_list =advertiser_campaigns.split(',')

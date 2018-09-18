@@ -6,7 +6,7 @@ import requests
 
 app = Flask(__name__)
 
-@app.route('/advertiser_campaigns=<advertiser_campaigns>&publisher_campaign=<publisher_campaign>')
+@app.route('/exclusion/advertiser_campaigns=<advertiser_campaigns>&publisher_campaign=<publisher_campaign>')
 def exlusion(advertiser_campaigns, publisher_campaign):
     campaigns = advertiser_campaigns.split(',')
     #print("campaigns: ", campaigns)

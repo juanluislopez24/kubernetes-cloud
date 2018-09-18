@@ -4,7 +4,7 @@ from ast import literal_eval
 import json
 
 app = Flask(__name__)
-@app.route('/advertiser_campaigns=<advertiser_campaigns>')
+@app.route('/ads/advertiser_campaigns=<advertiser_campaigns>')
 def ads(advertiser_campaigns):
     ad_list =advertiser_campaigns.split(',')
     #str_ad_list = ','.join("'"+str(e)+"'" for e in ad_list)

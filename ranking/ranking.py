@@ -4,7 +4,7 @@ import requests
 app = Flask(__name__)
 
 
-@app.route('/advertiser_campaigns=<advertiser_campaigns>&advertiser_campaigns_bids=<advertiser_campaigns_bids>&maximum=<maximum>')
+@app.route('/ranking/advertiser_campaigns=<advertiser_campaigns>&advertiser_campaigns_bids=<advertiser_campaigns_bids>&maximum=<maximum>')
 def ranking(advertiser_campaigns, advertiser_campaigns_bids, maximum):
     ad = advertiser_campaigns.split(',')
     bid = advertiser_campaigns_bids.split(',')
