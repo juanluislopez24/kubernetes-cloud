@@ -30,12 +30,18 @@ def askPricing(ad_camp, bids, pub_camp):
     return req.json()
 def checkData(cate, pub, zipi, maximum):
     if(len(cate) != 0 and len(pub) != 0 and len(zipi) != 0 and len(maximum)):
-        if(int(cate) and int(pub) and int(zipi) and int(maximum)):
+        if(int(cate) and int(pub) and int(maximum)):
             return True
     return False
 
 def joinPapu(exclusion,targeting):
     return list(set(exclusion) & set(targeting))
+
+
+@app.route('/test')
+def test():
+    return('test')
+
 #http://localhost:8080/category=1&publisher_campaign=88&maximum=3&zip_code=ALL
 @app.route('/category=<category>&publisher_campaign=<publisher_campaign>&zip_code=<zip_code>&maximum=<maximum>')
 def query(category, publisher_campaign, zip_code, maximum='100'):
