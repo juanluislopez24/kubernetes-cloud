@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 session = requests.Session()
 session.trust_env=False
-url = 'internal-privateBendiLB-710890398.us-east-1.elb.amazonaws.com'
+url = '//internal-privateBendiLB-710890398.us-east-1.elb.amazonaws.com'
 
 def askAds(ad_camp):
     req = session.get(url+'/ads/advertiser_campaigns={}'.format(ad_camp))
