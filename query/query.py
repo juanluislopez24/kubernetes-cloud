@@ -14,7 +14,7 @@ def askAds(ad_camp):
     req = session.get(url+'/ads/advertiser_campaigns={}'.format(ad_camp))
     return req.json()
 def askExclusion(ad_camp, pub_camp):
-    req = session.get(url+'/exlcusion/advertiser_campaigns={}&publisher_campaign={}'.format(ad_camp, pub_camp))
+    req = session.get(url+'/exclusion/advertiser_campaigns={}&publisher_campaign={}'.format(ad_camp, pub_camp))
     return req.json()
 def askTargeting(ad_camp, zipi):
     req = session.get(url+'/targeting/advertiser_campaigns={}&zip_code={}'.format(ad_camp, zipi))
