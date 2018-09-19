@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 session = requests.Session()
 session.trust_env=False
-url = '//internal-privateBendiLB-710890398.us-east-1.elb.amazonaws.com'
+url = 'internal-privateBendiLB-710890398.us-east-1.elb.amazonaws.com'
 
 def askAds(ad_camp):
     req = session.get(url+'/ads/advertiser_campaigns={}'.format(ad_camp))
@@ -20,7 +20,14 @@ def askTargeting(ad_camp, zipi):
     req = session.get(url+'/targeting/advertiser_campaigns={}&zip_code={}'.format(ad_camp, zipi))
     return req.json()
 def askMatching(category):
-    req = session.get(url+'/matching/category={}'.format(category))
+    try:
+        req = session.get(url+'/matching/category={}'.format(category))
+    except:
+        req = None
+    try:
+        req = session.get('//'+url+'/matching/category={}'.format(category))
+    except:
+        req = None
     return req.json()
 def askRanking(ad_camp, bids, maxi):
     req = session.get(url+'/ranking/advertiser_campaigns={}&advertiser_campaigns_bids={}&maximum={}'.format(ad_camp, bids, maxi))
