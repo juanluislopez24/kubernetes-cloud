@@ -20,14 +20,7 @@ def askTargeting(ad_camp, zipi):
     req = session.get(url+'/targeting/advertiser_campaigns={}&zip_code={}'.format(ad_camp, zipi))
     return req.json()
 def askMatching(category):
-    try:
-        req = session.get(url+'/matching/category={}'.format(category))
-    except:
-        req = None
-    try:
-        req = session.get('//'+url+'/matching/category={}'.format(category))
-    except:
-        req = None
+    req = session.get(url+'/matching/category={}'.format(category))
     return req.json()
 def askRanking(ad_camp, bids, maxi):
     req = session.get(url+'/ranking/advertiser_campaigns={}&advertiser_campaigns_bids={}&maximum={}'.format(ad_camp, bids, maxi))
