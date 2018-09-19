@@ -4,6 +4,11 @@ from ast import literal_eval
 import json
 
 app = Flask(__name__)
+
+@app.route('/healthCheck')
+def test():
+    return('test')
+
 @app.route('/ads/advertiser_campaigns=<advertiser_campaigns>')
 def ads(advertiser_campaigns):
     ad_list =advertiser_campaigns.split(',')

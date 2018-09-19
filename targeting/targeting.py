@@ -4,6 +4,10 @@ from flask import Flask
 
 app = Flask(__name__)
 
+@app.route('/healthCheck')
+def test():
+    return('test')
+
 @app.route('/targeting/advertiser_campaigns=<advertiser_campaigns>&zip_code=<zip_code>')
 def targeting(advertiser_campaigns, zip_code):
 

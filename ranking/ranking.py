@@ -4,6 +4,10 @@ import requests
 app = Flask(__name__)
 
 
+@app.route('/healthCheck')
+def test():
+    return('test')
+
 @app.route('/ranking/advertiser_campaigns=<advertiser_campaigns>&advertiser_campaigns_bids=<advertiser_campaigns_bids>&maximum=<maximum>')
 def ranking(advertiser_campaigns, advertiser_campaigns_bids, maximum):
     ad = advertiser_campaigns.split(',')

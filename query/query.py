@@ -40,7 +40,7 @@ def joinPapu(exclusion,targeting):
     return list(set(exclusion) & set(targeting))
 
 
-@app.route('/test')
+@app.route('/healthCheck')
 def test():
     return('test')
 

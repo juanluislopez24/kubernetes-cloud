@@ -5,6 +5,10 @@ import json
 app = Flask(__name__)
 
 
+@app.route('/healthCheck')
+def test():
+    return('test')
+
 @app.route('/matching/category=<category>')
 def matching(category):
     query = ("SELECT id, bid, targeting FROM advertiser_campaigns WHERE status = true AND category = %s")

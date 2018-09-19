@@ -4,7 +4,10 @@ import json
 
 app = Flask(__name__)
 
-
+@app.route('/healthCheck')
+def test():
+    return('test')
+    
 @app.route('/pricing/advertiser_campaigns=<advertiser_campaigns>&advertiser_campaigns_bids=<advertiser_campaigns_bids>&publisher_campaign=<publisher_campaign>')
 def pricing(advertiser_campaigns, advertiser_campaigns_bids, publisher_campaign):
     query = ("SELECT commission FROM publisher_campaigns WHERE id = %s")
