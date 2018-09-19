@@ -58,19 +58,26 @@ def query(category, publisher_campaign, zip_code, maximum='100'):
 
         query_obj["header"] = {"query_id":query_id}
 
-
-        matching_result = askMatching(category)
+        try:
+            matching_result = askMatching(category)
+        except:
+            return 'matching fallo'
         #{campaigns:"12,13,31", bids:"2.0,4.1,1.5"}
         print(type(matching_result))
         print(matching_result["campaign_ids"])
         campaigns_list = matching_result["campaign_ids"].split(',')
         bid_list = matching_result["bids"].split(',')
-
-        exclusion_result = askExclusion(matching_result["campaign_ids"], publisher_campaign)
+        try:
+            exclusion_result = askExclusion(matching_result["campaign_ids"], publisher_campaign)
+        except:
+            return 'exclusion fallo'
         #{exclusions:""}
         print('excl res')
         print(exclusion_result)
-        targeting_result = askTargeting(matching_result["campaign_ids"], zip_code)
+        try:
+            targeting_result = askTargeting(matching_result["campaign_ids"], zip_code)
+        except:
+            return 'targeting fallo'
         print('target res')
         print(targeting_result)
         #{targeting:""}
@@ -91,10 +98,16 @@ def query(category, publisher_campaign, zip_code, maximum='100'):
         print (maximum)
         if (maximum == None):
             maximum = 10
-        ranking_result = askRanking(str_campaign, str_bid, maximum)
+        try:
+            ranking_result = askRanking(str_campaign, str_bid, maximum)
+        except:
+            return 'ranking fallo'
         #{campaigns:"12,13,31", bids:"2.0,4.1,1.5"}
         print(ranking_result)
-        ads_result = askAds(ranking_result["campaigns"])
+        try:
+            ads_result = askAds(ranking_result["campaigns"])
+        except:
+            return 'ads fallo'
         ad_list = []
         print(ads_result)
         for ad in ads_result:
@@ -108,8 +121,10 @@ def query(category, publisher_campaign, zip_code, maximum='100'):
                 }
             )
         query_obj["ads"] = ad_list
-
-        pricing_result = askPricing(ranking_result["campaigns"], ranking_result["bid"], publisher_campaign)
+        try:
+            pricing_result = askPricing(ranking_result["campaigns"], ranking_result["bid"], publisher_campaign)
+        except:
+            return "pricing fallo"
 
         return json.dumps(query_obj)
     else:
