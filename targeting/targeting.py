@@ -15,13 +15,13 @@ def targeting(advertiser_campaigns, zip_code):
 
     str_ad_list = ','.join("'"+str(e)+"'" for e in ad_list)
 
-    query = ("SELECT id FROM advertiser_campaigns WHERE advertiser_campaigns.id IN " + '(' + str_ad_list + ')' + " AND (targeting IS NULL OR targeting = %s)")
-
+    query = ("SELECT id FROM advertiser_campaigns WHERE advertiser_campaigns.id IN " + '(' + str_ad_list + ')' + " AND (targeting = 'ALL' OR targeting LIKE '%" + zip_code + "%')")
+    print(query)
     cnx = mysql.connector.connect(user='papumaster', password='password',
                                   host='papu.ccafjo7btexd.us-east-1.rds.amazonaws.com',
                                   database='mariapapu')
     cursor = cnx.cursor()
-    cursor.execute(query,(zip_code,))
+    cursor.execute(query)
 
 
     rv = cursor.fetchall()

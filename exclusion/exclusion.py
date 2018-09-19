@@ -37,10 +37,13 @@ def exlusion(advertiser_campaigns, publisher_campaign):
 
     #print(data)
     new_data = []
-    for i in campaigns:
-        for j in data:
-            if int(i) != int(j):
-                new_data.append(i)
+    if len(data) != 0:
+        for i in campaigns:
+            for j in data:
+                if int(i) != int(j):
+                    new_data.append(i)
+    else:
+        new_data = campaigns
 
     print(new_data)
     #str_campaings = ','.join(str(e) for e in data)
