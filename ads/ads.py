@@ -25,10 +25,10 @@ def ads(advertiser_campaigns):
         cursor.execute(query,(id,))
         row_headers=[x[0] for x in cursor.description] #this will extract row headers
         rv = cursor.fetchall()
-        res = dict(zip(row_headers,rv[0]))
-        
-        results.append(res)
-    
+        if len(rv) != 0:
+            res = dict(zip(row_headers,rv[0]))
+            results.append(res)
+
     cnx.close()
     return json.dumps(results)
 
