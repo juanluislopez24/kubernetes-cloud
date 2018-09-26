@@ -3,30 +3,42 @@ from flask import Flask, Response
 import json
 import requests
 import uuid
+import boto3
+import decimal
 
 app = Flask(__name__)
 
 session = requests.Session()
 session.trust_env=False
-url = 'http://internal-privateBendiLB-710890398.us-east-1.elb.amazonaws.com'
+url = 'http://localhost'
+
+boto3session = boto3.Session(
+    aws_access_key_id='AKIAJUZPKLAPRV3WXKVA',
+    aws_secret_access_key='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',
+)
+
+dynamodb = boto3session.resource('dynamodb', region_name='us-east-1')
+
+table = dynamodb.Table('tarea6')
+
 
 def askAds(ad_camp):
-    req = session.get(url+'/ads/advertiser_campaigns={}'.format(ad_camp))
+    req = session.get(url+':8081/ads/advertiser_campaigns={}'.format(ad_camp))
     return req.json()
 def askExclusion(ad_camp, pub_camp):
-    req = session.get(url+'/exclusion/advertiser_campaigns={}&publisher_campaign={}'.format(ad_camp, pub_camp))
+    req = session.get(url+':8082/exclusion/advertiser_campaigns={}&publisher_campaign={}'.format(ad_camp, pub_camp))
     return req.json()
 def askTargeting(ad_camp, zipi):
-    req = session.get(url+'/targeting/advertiser_campaigns={}&zip_code={}'.format(ad_camp, zipi))
+    req = session.get(url+':8083/targeting/advertiser_campaigns={}&zip_code={}'.format(ad_camp, zipi))
     return req.json()
 def askMatching(category):
-    req = session.get(url+'/matching/category={}'.format(category))
+    req = session.get(url+':8084/matching/category={}'.format(category))
     return req.json()
 def askRanking(ad_camp, bids, maxi):
-    req = session.get(url+'/ranking/advertiser_campaigns={}&advertiser_campaigns_bids={}&maximum={}'.format(ad_camp, bids, maxi))
+    req = session.get(url+':8085/ranking/advertiser_campaigns={}&advertiser_campaigns_bids={}&maximum={}'.format(ad_camp, bids, maxi))
     return req.json()
 def askPricing(ad_camp, bids, pub_camp):
-    req = session.get(url+'/pricing/advertiser_campaigns={}&advertiser_campaigns_bids={}&publisher_campaign={}'.format(ad_camp, bids, pub_camp))
+    req = session.get(url+':8086/pricing/advertiser_campaigns={}&advertiser_campaigns_bids={}&publisher_campaign={}'.format(ad_camp, bids, pub_camp))
     return req.json()
 def checkData(cate, pub, zipi, maximum):
     if(len(cate) != 0 and len(pub) != 0 and len(zipi) != 0 and len(maximum)):
@@ -39,6 +51,12 @@ def checkData(cate, pub, zipi, maximum):
 def joinPapu(exclusion,targeting):
     return list(set(exclusion) & set(targeting))
 
+
+def insertDB(resp):
+    response = table.put_item(
+        Item=resp
+    )
+    return response
 
 @app.route('/healthCheck')
 def test():
@@ -56,7 +74,7 @@ def query(category, publisher_campaign, zip_code, maximum='100'):
         query_obj = {}
         query_id = str(uuid.uuid1())
 
-        query_obj["header"] = {"query_id":query_id}
+        query_obj["query_id"] = query_id
 
         try:
             matching_result = askMatching(category)
@@ -117,7 +135,8 @@ def query(category, publisher_campaign, zip_code, maximum='100'):
                 {"impression_id": impression_id,
                 "headline": ad["headline"],
                 "description": ad["description"],
-                "click_url": ad["url"]
+                "true_url": ad["url"]
+                "click_url": url + "/click/query="+query_id+"&impression="+impression_id
                 }
             )
         query_obj["ads"] = ad_list
@@ -125,8 +144,9 @@ def query(category, publisher_campaign, zip_code, maximum='100'):
             pricing_result = askPricing(ranking_result["campaigns"], ranking_result["bid"], publisher_campaign)
         except:
             return "pricing fallo"
+        resp = insertDB(query_obj)
 
-        return json.dumps(query_obj)
+        return str(query_obj)
     else:
         return ("Parametros invalidos")
 
