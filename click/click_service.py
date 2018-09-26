@@ -25,8 +25,8 @@ class DecimalEncoder(json.JSONEncoder):
 
 
 boto3session = boto3.Session(
-    aws_access_key_id='AKIAJUZPKLAPRV3WXKVA',
-    aws_secret_access_key='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',
+    aws_access_key_id='',
+    aws_secret_access_key='',
 )
 
 dynamodb = boto3session.resource('dynamodb', region_name='us-east-1')
