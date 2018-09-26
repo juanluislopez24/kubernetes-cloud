@@ -135,7 +135,7 @@ def query(category, publisher_campaign, zip_code, maximum='100'):
                 {"impression_id": impression_id,
                 "headline": ad["headline"],
                 "description": ad["description"],
-                "true_url": ad["url"]
+                "true_url": ad["url"],
                 "click_url": url + "/click/query="+query_id+"&impression="+impression_id
                 }
             )
