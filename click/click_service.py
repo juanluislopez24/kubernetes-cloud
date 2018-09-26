@@ -3,7 +3,6 @@ import json
 import requests
 import uuid
 import boto3
-import decimal
 
 from boto3.dynamodb.conditions import Key, Attr
 from botocore.exceptions import ClientError
@@ -13,15 +12,6 @@ app = Flask(__name__)
 
 # HEADER status:301
 # click_url
-
-class DecimalEncoder(json.JSONEncoder):
-    def default(self, o):
-        if isinstance(o, decimal.Decimal):
-            if o % 1 > 0:
-                return float(o)
-            else:
-                return int(o)
-        return super(DecimalEncoder, self).default(o)
 
 
 boto3session = boto3.Session(
