@@ -1,4 +1,4 @@
-from flask import Flask, Response
+from flask import Flask, Response, redirect
 import json
 import requests
 import uuid
@@ -38,15 +38,14 @@ def click(query_id, impression_id):
     else:
         item = response['Item']
         resp = None
-
+        print (item)
         for ad in item["ads"]:
             if ad["impression_id"] == impression_id:
                 resp = ad
             
         if resp:
             print("GetItem succeeded:")
-            print(resp)
-            return json.dumps(resp)
+            return redirect(resp["true_url"], code=301)
         else:
             print("Error no Ad with Impression ID")
             return "Error no Ad with Impression ID"
