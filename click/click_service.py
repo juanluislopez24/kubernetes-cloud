@@ -10,9 +10,6 @@ from botocore.exceptions import ClientError
 
 app = Flask(__name__)
 
-# HEADER status:301
-# click_url
-
 
 boto3session = boto3.Session(
     aws_access_key_id='',
@@ -45,7 +42,7 @@ def click(query_id, impression_id):
             
         if resp:
             print("GetItem succeeded:")
-            return redirect(resp["true_url"], code=301)
+            return redirect(resp["true_url"], code=302)
         else:
             print("Error no Ad with Impression ID")
             return "Error no Ad with Impression ID"
