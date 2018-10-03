@@ -47,5 +47,9 @@ def click(query_id, impression_id):
             print("Error no Ad with Impression ID")
             return "Error no Ad with Impression ID"
 
+@app.route('/click/healthCheck')
+def test():
+    return('test')
+
 if __name__ == '__main__':
       app.run(host='0.0.0.0', port=8087)
