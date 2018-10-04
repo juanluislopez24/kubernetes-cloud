@@ -10,7 +10,8 @@ app = Flask(__name__)
 
 session = requests.Session()
 session.trust_env=False
-url = 'http://privateLV-2073766469.us-east-1.elb.amazonaws.com'
+url = 'http://internal-privLB-1730808406.us-east-1.elb.amazonaws.com'
+pub_url = 'pubLD-1606470928.us-east-1.elb.amazonaws.com'
 
 boto3session = boto3.Session(
     aws_access_key_id='',
@@ -136,7 +137,7 @@ def query(category, publisher_campaign, zip_code, maximum='100'):
                 "headline": ad["headline"],
                 "description": ad["description"],
                 "true_url": ad["url"],
-                "click_url": url + "/click/query="+query_id+"&impression="+impression_id
+                "click_url": pub_url + "/click/query="+query_id+"&impression="+impression_id
                 }
             )
         query_obj["ads"] = ad_list
