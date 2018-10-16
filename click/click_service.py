@@ -39,7 +39,25 @@ def click(query_id, impression_id):
         for ad in item["ads"]:
             if ad["impression_id"] == impression_id:
                 resp = ad
-            
+        
+        click_hose_name = 'clicksFirehose'
+        click_tracking = {
+            "query_id": "",
+            "impression_id": "",
+            "click_id": "",
+            "timestamp": "",
+            "publisher_id": "",
+            "publisher_campaign_id": "",
+            "advertiser_id": "",
+            "advertiser_campaign_id": "",
+            "category": "",
+            "ad_id": "",
+            "zip_code": "",
+            "advertiser_price": "",
+            "publisher_price": "",
+            "position": ""
+        }
+
         if resp:
             print("GetItem succeeded:")
             return redirect(resp["true_url"], code=302)

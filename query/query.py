@@ -127,6 +127,12 @@ def query(category, publisher_campaign, zip_code, maximum='100'):
             ads_result = askAds(ranking_result["campaigns"])
         except:
             return 'ads fallo'
+
+        try:
+            pricing_result = askPricing(ranking_result["campaigns"], ranking_result["bid"], publisher_campaign)
+        except:
+            return "pricing fallo"
+    
         ad_list = []
         print(ads_result)
         for ad in ads_result:
@@ -140,12 +146,40 @@ def query(category, publisher_campaign, zip_code, maximum='100'):
                 "click_url": pub_url + "/click/query="+query_id+"&impression="+impression_id
                 }
             )
+
+            impression_hose_name = 'queryHose'
+
+            impression_tracking = {
+                "query_id": query_id,
+                "impression_id": impression_id,
+                "timestamp": "",
+                "publisher_id": "",
+                "publisher_campaign_id": "",
+                "advertiser_id": "",
+                "advertiser_campaign_id": "",
+                "category": "",
+                "ad_id": "",
+                "zip_code": "",
+                "advertiser_price": "",
+                "publisher_price": "",
+                "position": ""
+            }
+
         query_obj["ads"] = ad_list
-        try:
-            pricing_result = askPricing(ranking_result["campaigns"], ranking_result["bid"], publisher_campaign)
-        except:
-            return "pricing fallo"
+        
         resp = insertDB(query_obj)
+
+
+        query_hose_name = 'queryHose'
+
+        query = {
+            "query_id" : query_id,
+            "timestamp": "",
+            "publisher_id": "",
+            "publisher_campaign_id": "",
+            "category": "",
+            "zip_code": ""
+        }
 
         return str(query_obj)
     else:
