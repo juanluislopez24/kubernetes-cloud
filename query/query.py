@@ -11,8 +11,8 @@ app = Flask(__name__)
 
 session = requests.Session()
 session.trust_env=False
-#url = 'http://localhost'
-url = 'pubLD-1606470928.us-east-1.elb.amazonaws.com'
+url = 'http://internal-privLB-1730808406.us-east-1.elb.amazonaws.com'
+pub_url = 'pubLD-1606470928.us-east-1.elb.amazonaws.com'
 
 boto3session = boto3.Session(
     aws_access_key_id='',
@@ -145,61 +145,76 @@ def query(category, publisher_campaign, zip_code, maximum='100'):
             print("Pricing res: ")
             print(pricing_result)
         except:
-            return "pricing fallo"
+            return "ppricing fallo"
         
         ad_list = []
         counter = 0
-        for ad in ads_result:
-            impression_id = str(uuid.uuid1())
+        try:
+            for ad in ads_result:
+                impression_id = str(uuid.uuid1())
 
-            impression_hose_name = 'impressionHose'
+                impression_hose_name = 'impressionHose'
 
-            impression_tracking = {
-                "query_id": query_id,
-                "impression_id": impression_id,
-                "headline": ad["headline"],
-                "description": ad["description"],
-                "true_url": ad["url"],
-                "click_url": pub_url + "/click/query="+query_id+"&impression="+impression_id,
+                impression_tracking = {
+                    "query_id": query_id,
+                    "impression_id": impression_id,
+                    "headline": ad["headline"],
+                    "description": ad["description"],
+                    "true_url": ad["url"],
+                    "click_url": pub_url + "/click/query="+query_id+"&impression="+impression_id,
+                    "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S.%fZ"),
+                    "publisher_id": pricing_result[counter]["publisher_id"],
+                    "publisher_campaign_id": publisher_campaign,
+                    "advertiser_id": ad["advertiser_id"],
+                    "advertiser_campaign_id": ad["campaign_id"],
+                    "category": category,
+                    "ad_id": ad["id"],
+                    "zip_code": zip_code,
+                    "advertiser_price": pricing_result[counter]["ad_price"],
+                    "publisher_price": pricing_result[counter]["pub_price"],
+                    "position": counter + 1
+                }
+                print(impression_tracking)
+
+                ad_list.append(
+                    impression_tracking
+                )
+                try:
+                    postTracking(impression_hose_name, impression_tracking)
+                except:
+                    return "Tracking impression fallo"
+
+                counter += 1
+        except:
+            return "for fallo"
+
+        try:
+            query_obj["ads"] = ad_list
+
+            query_hose_name = 'queryHose'
+
+            query_tracking = {
+                "query_id" : query_id,
                 "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S.%fZ"),
-                "publisher_id": pricing_result[counter]["publisher_id"],
+                "publisher_id": pricing_result[0]["publisher_id"],
                 "publisher_campaign_id": publisher_campaign,
-                "advertiser_id": ad["advertiser_id"],
-                "advertiser_campaign_id": ad["campaign_id"],
                 "category": category,
-                "ad_id": ad["id"],
-                "zip_code": zip_code,
-                "advertiser_price": pricing_result[counter]["ad_price"],
-                "publisher_price": pricing_result[counter]["pub_price"],
-                "position": counter + 1
+                "zip_code": zip_code
             }
-            print(impression_tracking)
+            print(query_tracking)
 
-            ad_list.append(
-                impression_tracking
-            )
+            
+            try:
+                postTracking(query_hose_name, query_tracking)
+            except:
+                return "Tracking query fallo"
+        except:
+            return "tracking query fallo"
 
-            postTracking(impression_hose_name, impression_tracking)
-
-            counter += 1
-
-        query_obj["ads"] = ad_list
-
-        query_hose_name = 'queryHose'
-
-        query_tracking = {
-            "query_id" : query_id,
-            "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S.%fZ"),
-            "publisher_id": pricing_result[0]["publisher_id"],
-            "publisher_campaign_id": publisher_campaign,
-            "category": category,
-            "zip_code": zip_code
-        }
-        print(query_tracking)
-
-        postTracking(query_hose_name, query_tracking)
-
-        resp = insertDB(query_obj)
+        try:
+            resp = insertDB(query_obj)
+        except:
+            return "dynamo fallo"
 
         return str(query_obj)
     else:

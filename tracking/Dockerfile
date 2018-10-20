@@ -1,7 +1,7 @@
 FROM alpine
 FROM python:3
 
-ADD targeting.py /targeting.py
+ADD tracking.py /tracking.py
 ADD requirements.txt /requirements.txt
 
 RUN pip install -r requirements.txt

@@ -11,7 +11,7 @@ from botocore.exceptions import ClientError
 
 app = Flask(__name__)
 
-url = 'http://localhost'
+url = 'http://internal-privLB-1730808406.us-east-1.elb.amazonaws.com'
 
 boto3session = boto3.Session(
     aws_access_key_id='',
@@ -23,7 +23,7 @@ dynamodb = boto3session.resource('dynamodb', region_name='us-east-1')
 table = dynamodb.Table('tarea6')
 
 def postTracking(firehose_name, data):
-    req = requests.post(url+':8088/tracking/firehose_name={}'.format(firehose_name), json=data)
+    req = requests.post(url+'/tracking/firehose_name={}'.format(firehose_name), json=data)
     return req.json()
 
 @app.route('/click/query=<query_id>&impression=<impression_id>')
@@ -44,13 +44,16 @@ def click(query_id, impression_id):
         print (item)
         for ad in item["ads"]:
             if ad["impression_id"] == impression_id:
+                click_id = str(uuid.uuid1())
                 resp = ad
-    
+
+                
+
                 click_hose_name = 'clicksFirehose'
                 click_tracking = {
                     "query_id": ad["query_id"],
                     "impression_id": ad["impression_id"],
-                    "click_id": ad["click_id"],
+                    "click_id": click_id,
                     "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S.%fZ"),
                     "publisher_id": ad["publisher_id"],
                     "publisher_campaign_id": ad["publisher_campaign_id"],
@@ -63,7 +66,10 @@ def click(query_id, impression_id):
                     "publisher_price": ad["publisher_price"],
                     "position": ad["position"]
                 }
-                postTracking(click_hose_name, click_tracking)
+                try:
+                    postTracking(click_hose_name, click_tracking)
+                except:
+                    return "tracking click fallo"
 
         if resp:
             print("GetItem succeeded:")
