@@ -160,7 +160,7 @@ def query(category, publisher_campaign, zip_code, maximum='100'):
                 "headline": ad["headline"],
                 "description": ad["description"],
                 "true_url": ad["url"],
-                "click_url": pub_url + "/click/query="+query_id+"&impression="+impression_id
+                "click_url": pub_url + "/click/query="+query_id+"&impression="+impression_id,
                 "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S.%fZ"),
                 "publisher_id": pricing_result[counter]["publisher_id"],
                 "publisher_campaign_id": publisher_campaign,

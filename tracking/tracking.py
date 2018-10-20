@@ -20,7 +20,7 @@ firehose_client = boto3.client('firehose', region_name='us-east-1')
 @app.route('/tracking/firehose_name=<firehose_name>', methods = ['POST'])
 def tracking(firehose_name):
     payload = request.get_json()
-    try:s
+    try:
         response = firehose_client.put_record (
             StreamName = firehose_name,
             Record = json.dumps(payload).encode()
