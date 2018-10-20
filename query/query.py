@@ -42,6 +42,9 @@ def askRanking(ad_camp, bids, maxi):
 def askPricing(ad_camp, bids, pub_camp):
     req = session.get(url+':8086/pricing/advertiser_campaigns={}&advertiser_campaigns_bids={}&publisher_campaign={}'.format(ad_camp, bids, pub_camp))
     return req.json()
+def postTracking(firehose_name, data):
+    req = requests.post(url+':8088/tracking/firehose_name={}'.format(firehose_name), json=data)
+    return req.json()
 def checkData(cate, pub, zipi, maximum):
     if(len(cate) != 0 and len(pub) != 0 and len(zipi) != 0 and len(maximum)):
         try:
@@ -70,7 +73,7 @@ def query(category, publisher_campaign, zip_code, maximum='100'):
     # print(category)
     # print(publisher_campaign)
     # print(zip_code)
-    print (maximum)
+    # print (maximum)
     if(checkData(category, publisher_campaign, zip_code, maximum)):
 
         query_obj = {}
@@ -108,20 +111,18 @@ def query(category, publisher_campaign, zip_code, maximum='100'):
         innerJoined = joinPapu(exclusion_result["exclusions"].split(','),targeting_result["targeting"].split(','))
         # lista de IDs [""]
         print(innerJoined)
-        print(campaigns_list)
 
         new_campaigns = []
         new_bids = []
 
         for i in range(0,len(campaigns_list)):
-            print(i, campaigns_list[i])
             if campaigns_list[i] in innerJoined:
                 new_campaigns.append(campaigns_list[i])
                 new_bids.append(bid_list[i])
 
         str_campaign = ",".join(new_campaigns)
         str_bid = ",".join(new_bids)
-        print (maximum)
+
         if (maximum == None):
             maximum = 10
         try:
@@ -150,21 +151,16 @@ def query(category, publisher_campaign, zip_code, maximum='100'):
         counter = 0
         for ad in ads_result:
             impression_id = str(uuid.uuid1())
-            print(ad)
-            ad_list.append(
-                {"impression_id": impression_id,
-                "headline": ad["headline"],
-                "description": ad["description"],
-                "true_url": ad["url"],
-                "click_url": pub_url + "/click/query="+query_id+"&impression="+impression_id
-                }
-            )
 
             impression_hose_name = 'queryHose'
 
             impression_tracking = {
                 "query_id": query_id,
                 "impression_id": impression_id,
+                "headline": ad["headline"],
+                "description": ad["description"],
+                "true_url": ad["url"],
+                "click_url": pub_url + "/click/query="+query_id+"&impression="+impression_id
                 "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S.%fZ"),
                 "publisher_id": pricing_result[counter]["publisher_id"],
                 "publisher_campaign_id": publisher_campaign,
@@ -177,12 +173,15 @@ def query(category, publisher_campaign, zip_code, maximum='100'):
                 "publisher_price": pricing_result[counter]["pub_price"],
                 "position": counter + 1
             }
+            print(impression_tracking)
+
+            ad_list.append(
+                impression_tracking
+            )
+
             counter += 1
 
         query_obj["ads"] = ad_list
-        
-        resp = insertDB(query_obj)
-
 
         query_hose_name = 'queryHose'
 
@@ -194,6 +193,9 @@ def query(category, publisher_campaign, zip_code, maximum='100'):
             "category": category,
             "zip_code": zip_code
         }
+        print(query_tracking)
+
+        resp = insertDB(query_obj)
 
         return str(query_obj)
     else:

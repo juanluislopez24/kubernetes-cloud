@@ -34,7 +34,7 @@ def pricing(advertiser_campaigns, advertiser_campaigns_bids, publisher_campaign)
             "advertiser_campaign_id" : ad_campaing_list[position],
             "publisher_id": json_data["publisher_id"],
             "ad_price": ad_bid_list[position],
-            "pub_price": json_data["commission"]
+            "pub_price": str(float(ad_bid_list[position]) * float(json_data["commission"]))
         }
         prices_list.append(price)
 

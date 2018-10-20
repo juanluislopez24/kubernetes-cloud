@@ -1,7 +1,7 @@
 import mysql.connector
 import json
 import boto3
-from flask import Flask
+from flask import Flask, request
 
 app = Flask(__name__)
 
@@ -17,11 +17,12 @@ boto3session = boto3.Session(
 firehose_client = boto3.client('firehose', region_name='us-east-1')
 
 
-@app.route('/tracking')
-def tracking(streamName, payload):
-    try:
+@app.route('/tracking/firehose_name=<firehose_name>', methods = ['POST'])
+def tracking(firehose_name):
+    payload = request.get_json()
+    try:s
         response = firehose_client.put_record (
-            StreamName = streamName,
+            StreamName = firehose_name,
             Record = json.dumps(payload).encode()
         )
         return response

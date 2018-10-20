@@ -40,24 +40,24 @@ def click(query_id, impression_id):
         for ad in item["ads"]:
             if ad["impression_id"] == impression_id:
                 resp = ad
-        
-        click_hose_name = 'clicksFirehose'
-        click_tracking = {
-            "query_id": "",
-            "impression_id": "",
-            "click_id": "",
-            "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S.%fZ"),
-            "publisher_id": "",
-            "publisher_campaign_id": "",
-            "advertiser_id": "",
-            "advertiser_campaign_id": "",
-            "category": "",
-            "ad_id": "",
-            "zip_code": "",
-            "advertiser_price": "",
-            "publisher_price": "",
-            "position": ""
-        }
+    
+                click_hose_name = 'clicksFirehose'
+                click_tracking = {
+                    "query_id": ad["query_id"],
+                    "impression_id": ad["impression_id"],
+                    "click_id": ad["click_id"],
+                    "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S.%fZ"),
+                    "publisher_id": ad["publisher_id"],
+                    "publisher_campaign_id": ad["publisher_campaign_id"],
+                    "advertiser_id": ad["advertiser_id"],
+                    "advertiser_campaign_id": ad["advertiser_campaign_id"],
+                    "category": ad["category"],
+                    "ad_id": ad["ad_id"],
+                    "zip_code": ad["zip_code"],
+                    "advertiser_price": ad["advertiser_price"],
+                    "publisher_price": ad["publisher_price"],
+                    "position": ad["position"]
+                }
 
         if resp:
             print("GetItem succeeded:")
