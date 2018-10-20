@@ -11,8 +11,8 @@ app = Flask(__name__)
 
 session = requests.Session()
 session.trust_env=False
-#url = 'http://localhost'
-url = 'pubLD-1606470928.us-east-1.elb.amazonaws.com'
+url = 'internal-privLB-1730808406.us-east-1.elb.amazonaws.com'
+pub_url = 'pubLD-1606470928.us-east-1.elb.amazonaws.com'
 
 boto3session = boto3.Session(
     aws_access_key_id='',
