@@ -44,7 +44,7 @@ def askPricing(ad_camp, bids, pub_camp):
     return req.json()
 def postTracking(firehose_name, data):
     req = requests.post(url+':8088/tracking/firehose_name={}'.format(firehose_name), json=data)
-    return req.json()
+    print (req)
 def checkData(cate, pub, zipi, maximum):
     if(len(cate) != 0 and len(pub) != 0 and len(zipi) != 0 and len(maximum)):
         try:
@@ -152,7 +152,7 @@ def query(category, publisher_campaign, zip_code, maximum='100'):
         for ad in ads_result:
             impression_id = str(uuid.uuid1())
 
-            impression_hose_name = 'queryHose'
+            impression_hose_name = 'impressionHose'
 
             impression_tracking = {
                 "query_id": query_id,
@@ -179,6 +179,8 @@ def query(category, publisher_campaign, zip_code, maximum='100'):
                 impression_tracking
             )
 
+            postTracking(impression_hose_name, impression_tracking)
+
             counter += 1
 
         query_obj["ads"] = ad_list
@@ -194,6 +196,8 @@ def query(category, publisher_campaign, zip_code, maximum='100'):
             "zip_code": zip_code
         }
         print(query_tracking)
+
+        postTracking(query_hose_name, query_tracking)
 
         resp = insertDB(query_obj)
 

@@ -11,6 +11,7 @@ from botocore.exceptions import ClientError
 
 app = Flask(__name__)
 
+url = 'http://localhost'
 
 boto3session = boto3.Session(
     aws_access_key_id='',
@@ -20,6 +21,10 @@ boto3session = boto3.Session(
 dynamodb = boto3session.resource('dynamodb', region_name='us-east-1')
 
 table = dynamodb.Table('tarea6')
+
+def postTracking(firehose_name, data):
+    req = requests.post(url+':8088/tracking/firehose_name={}'.format(firehose_name), json=data)
+    return req.json()
 
 @app.route('/click/query=<query_id>&impression=<impression_id>')
 def click(query_id, impression_id):
@@ -58,6 +63,7 @@ def click(query_id, impression_id):
                     "publisher_price": ad["publisher_price"],
                     "position": ad["position"]
                 }
+                postTracking(click_hose_name, click_tracking)
 
         if resp:
             print("GetItem succeeded:")

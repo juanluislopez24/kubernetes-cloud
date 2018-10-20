@@ -1,4 +1,4 @@
-import mysql.connector
+
 import json
 import boto3
 from flask import Flask, request
@@ -14,18 +14,23 @@ boto3session = boto3.Session(
     aws_secret_access_key='',
 )
 
-firehose_client = boto3.client('firehose', region_name='us-east-1')
+firehose_client = boto3session.client('firehose', region_name='us-east-1')
 
 
 @app.route('/tracking/firehose_name=<firehose_name>', methods = ['POST'])
 def tracking(firehose_name):
     payload = request.get_json()
+    print(firehose_name)
+    print(payload)
     try:
         response = firehose_client.put_record (
-            StreamName = firehose_name,
-            Record = json.dumps(payload).encode()
+            DeliveryStreamName = firehose_name,
+            Record = {
+                    'Data': json.dumps(payload).encode()
+                    }
         )
-        return response
+        print(str(json.dumps(response, indent=4)))
+        return json.dumps(response)
     except:
         return "Tracking Error"
         
