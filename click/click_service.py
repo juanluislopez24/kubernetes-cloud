@@ -3,6 +3,7 @@ import json
 import requests
 import uuid
 import boto3
+from datetime import datetime, timezone
 
 from boto3.dynamodb.conditions import Key, Attr
 from botocore.exceptions import ClientError
@@ -45,7 +46,7 @@ def click(query_id, impression_id):
             "query_id": "",
             "impression_id": "",
             "click_id": "",
-            "timestamp": "",
+            "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S.%fZ"),
             "publisher_id": "",
             "publisher_campaign_id": "",
             "advertiser_id": "",

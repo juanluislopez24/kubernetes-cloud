@@ -21,12 +21,13 @@ def ads(advertiser_campaigns):
 
     results = []
     for id in ad_list:
-        query = ("SELECT id, headline, description, url FROM ads JOIN campaign_ads ON ads.id = campaign_ads.ad_id WHERE campaign_ads.campaign_id = %s")
+        query = ("SELECT id, advertiser_id, headline, description, url FROM ads JOIN campaign_ads ON ads.id = campaign_ads.ad_id WHERE campaign_ads.campaign_id = %s")
         cursor.execute(query,(id,))
         row_headers=[x[0] for x in cursor.description] #this will extract row headers
         rv = cursor.fetchall()
         if len(rv) != 0:
             res = dict(zip(row_headers,rv[0]))
+            res["campaign_id"] = id
             results.append(res)
 
     cnx.close()

@@ -20,13 +20,13 @@ firehose_client = boto3.client('firehose', region_name='us-east-1')
 @app.route('/tracking')
 def tracking(streamName, payload):
     try:
-        response = firehose_client.put_record(
+        response = firehose_client.put_record (
             StreamName = streamName,
-            Data = json.dumps(payload)
+            Record = json.dumps(payload).encode()
         )
         return response
     except:
-        return "Error"
+        return "Tracking Error"
         
 
 if __name__ == '__main__':

@@ -5,12 +5,13 @@ import requests
 import uuid
 import boto3
 import decimal
+from datetime import datetime, timezone
 
 app = Flask(__name__)
 
 session = requests.Session()
 session.trust_env=False
-url = 'http://internal-privLB-1730808406.us-east-1.elb.amazonaws.com'
+url = 'http://localhost'
 pub_url = 'pubLD-1606470928.us-east-1.elb.amazonaws.com'
 
 boto3session = boto3.Session(
@@ -24,22 +25,22 @@ table = dynamodb.Table('tarea6')
 
 
 def askAds(ad_camp):
-    req = session.get(url+'/ads/advertiser_campaigns={}'.format(ad_camp))
+    req = session.get(url+':8081/ads/advertiser_campaigns={}'.format(ad_camp))
     return req.json()
 def askExclusion(ad_camp, pub_camp):
-    req = session.get(url+'/exclusion/advertiser_campaigns={}&publisher_campaign={}'.format(ad_camp, pub_camp))
+    req = session.get(url+':8082/exclusion/advertiser_campaigns={}&publisher_campaign={}'.format(ad_camp, pub_camp))
     return req.json()
 def askTargeting(ad_camp, zipi):
-    req = session.get(url+'/targeting/advertiser_campaigns={}&zip_code={}'.format(ad_camp, zipi))
+    req = session.get(url+':8083/targeting/advertiser_campaigns={}&zip_code={}'.format(ad_camp, zipi))
     return req.json()
 def askMatching(category):
-    req = session.get(url+'/matching/category={}'.format(category))
+    req = session.get(url+':8084/matching/category={}'.format(category))
     return req.json()
 def askRanking(ad_camp, bids, maxi):
-    req = session.get(url+'/ranking/advertiser_campaigns={}&advertiser_campaigns_bids={}&maximum={}'.format(ad_camp, bids, maxi))
+    req = session.get(url+':8085/ranking/advertiser_campaigns={}&advertiser_campaigns_bids={}&maximum={}'.format(ad_camp, bids, maxi))
     return req.json()
 def askPricing(ad_camp, bids, pub_camp):
-    req = session.get(url+'/pricing/advertiser_campaigns={}&advertiser_campaigns_bids={}&publisher_campaign={}'.format(ad_camp, bids, pub_camp))
+    req = session.get(url+':8086/pricing/advertiser_campaigns={}&advertiser_campaigns_bids={}&publisher_campaign={}'.format(ad_camp, bids, pub_camp))
     return req.json()
 def checkData(cate, pub, zipi, maximum):
     if(len(cate) != 0 and len(pub) != 0 and len(zipi) != 0 and len(maximum)):
@@ -79,33 +80,39 @@ def query(category, publisher_campaign, zip_code, maximum='100'):
 
         try:
             matching_result = askMatching(category)
+            print("Matching res: ")
+            print(matching_result)
         except:
             return 'matching fallo'
         #{campaigns:"12,13,31", bids:"2.0,4.1,1.5"}
-        print(type(matching_result))
-        print(matching_result["campaign_ids"])
+        
+        
         campaigns_list = matching_result["campaign_ids"].split(',')
         bid_list = matching_result["bids"].split(',')
         try:
             exclusion_result = askExclusion(matching_result["campaign_ids"], publisher_campaign)
+            print('excl res')
+            print(exclusion_result)
         except:
             return 'exclusion fallo'
         #{exclusions:""}
-        print('excl res')
-        print(exclusion_result)
+        
         try:
             targeting_result = askTargeting(matching_result["campaign_ids"], zip_code)
+            print('target res')
+            print(targeting_result)
         except:
             return 'targeting fallo'
-        print('target res')
-        print(targeting_result)
+        
         #{targeting:""}
         innerJoined = joinPapu(exclusion_result["exclusions"].split(','),targeting_result["targeting"].split(','))
         # lista de IDs [""]
         print(innerJoined)
         print(campaigns_list)
+
         new_campaigns = []
         new_bids = []
+
         for i in range(0,len(campaigns_list)):
             print(i, campaigns_list[i])
             if campaigns_list[i] in innerJoined:
@@ -119,22 +126,28 @@ def query(category, publisher_campaign, zip_code, maximum='100'):
             maximum = 10
         try:
             ranking_result = askRanking(str_campaign, str_bid, maximum)
+            print("ranking res: ")
+            print(ranking_result)
         except:
             return 'ranking fallo'
         #{campaigns:"12,13,31", bids:"2.0,4.1,1.5"}
-        print(ranking_result)
+        
         try:
             ads_result = askAds(ranking_result["campaigns"])
+            print("Ad res: ")
+            print(ads_result)
         except:
             return 'ads fallo'
 
         try:
             pricing_result = askPricing(ranking_result["campaigns"], ranking_result["bid"], publisher_campaign)
+            print("Pricing res: ")
+            print(pricing_result)
         except:
             return "pricing fallo"
-    
+        
         ad_list = []
-        print(ads_result)
+        counter = 0
         for ad in ads_result:
             impression_id = str(uuid.uuid1())
             print(ad)
@@ -152,18 +165,19 @@ def query(category, publisher_campaign, zip_code, maximum='100'):
             impression_tracking = {
                 "query_id": query_id,
                 "impression_id": impression_id,
-                "timestamp": "",
-                "publisher_id": "",
-                "publisher_campaign_id": "",
-                "advertiser_id": "",
-                "advertiser_campaign_id": "",
-                "category": "",
-                "ad_id": "",
-                "zip_code": "",
-                "advertiser_price": "",
-                "publisher_price": "",
-                "position": ""
+                "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S.%fZ"),
+                "publisher_id": pricing_result[counter]["publisher_id"],
+                "publisher_campaign_id": publisher_campaign,
+                "advertiser_id": ad["advertiser_id"],
+                "advertiser_campaign_id": ad["campaign_id"],
+                "category": category,
+                "ad_id": ad["id"],
+                "zip_code": zip_code,
+                "advertiser_price": pricing_result[counter]["ad_price"],
+                "publisher_price": pricing_result[counter]["pub_price"],
+                "position": counter + 1
             }
+            counter += 1
 
         query_obj["ads"] = ad_list
         
@@ -172,13 +186,13 @@ def query(category, publisher_campaign, zip_code, maximum='100'):
 
         query_hose_name = 'queryHose'
 
-        query = {
+        query_tracking = {
             "query_id" : query_id,
-            "timestamp": "",
-            "publisher_id": "",
-            "publisher_campaign_id": "",
-            "category": "",
-            "zip_code": ""
+            "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S.%fZ"),
+            "publisher_id": pricing_result[0]["publisher_id"],
+            "publisher_campaign_id": publisher_campaign,
+            "category": category,
+            "zip_code": zip_code
         }
 
         return str(query_obj)
