@@ -15,8 +15,8 @@ url = 'http://internal-privLB-1730808406.us-east-1.elb.amazonaws.com'
 pub_url = 'pubLD-1606470928.us-east-1.elb.amazonaws.com'
 
 boto3session = boto3.Session(
-    aws_access_key_id='AKIAIB433ANZQHT4LW5Q',
-    aws_secret_access_key='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',
+    aws_access_key_id='',
+    aws_secret_access_key='',
 )
 
 dynamodb = boto3session.resource('dynamodb', region_name='us-east-1')
@@ -42,8 +42,8 @@ def askRanking(ad_camp, bids, maxi):
 def askPricing(ad_camp, bids, pub_camp):
     req = session.get(url+'/pricing/advertiser_campaigns={}&advertiser_campaigns_bids={}&publisher_campaign={}'.format(ad_camp, bids, pub_camp))
     return req.json()
-def postTracking(firehose_name, payload):
-    req = requests.post(url+'/tracking/firehose_name={}'.format(firehose_name), data=payload)
+def postTracking(firehose_name, data):
+    req = requests.post(url+'/tracking/firehose_name={}'.format(firehose_name), data=data)
     print (req)
 def checkData(cate, pub, zipi, maximum):
     if(len(cate) != 0 and len(pub) != 0 and len(zipi) != 0 and len(maximum)):
