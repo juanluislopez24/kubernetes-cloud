@@ -19,9 +19,9 @@ firehose_client = boto3session.client('firehose', region_name='us-east-1')
 
 @app.route('/tracking/firehose_name=<firehose_name>', methods = ['POST'])
 def tracking(firehose_name):
-    payload = request.get_json()
+    payload = request.form
     print(firehose_name)
-    print(payload)
+    print(json.dumps(payload))
     try:
         response = firehose_client.put_record (
             DeliveryStreamName = firehose_name,

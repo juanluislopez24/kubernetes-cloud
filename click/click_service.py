@@ -1,4 +1,4 @@
-from flask import Flask, Response, redirect
+from flask import Flask, redirect
 import json
 import requests
 import uuid
@@ -22,9 +22,14 @@ dynamodb = boto3session.resource('dynamodb', region_name='us-east-1')
 
 table = dynamodb.Table('tarea6')
 
-def postTracking(firehose_name, data):
-    req = requests.post(url+'/tracking/firehose_name={}'.format(firehose_name), json=data)
-    return req.json()
+def postTracking(firehose_name, payload):
+    print(firehose_name)
+    print(payload)
+    
+    r = requests.post(url+'/tracking/firehose_name={}'.format(firehose_name), data=payload)
+
+    print("tracking res:", r.status_code)
+    
 
 @app.route('/click/query=<query_id>&impression=<impression_id>')
 def click(query_id, impression_id):
@@ -39,15 +44,14 @@ def click(query_id, impression_id):
         print(e.response['Error']['Message'])
         return e.response['Error']['Message']
     else:
+        
         item = response['Item']
         resp = None
-        print (item)
+        
         for ad in item["ads"]:
             if ad["impression_id"] == impression_id:
                 click_id = str(uuid.uuid1())
                 resp = ad
-
-                
 
                 click_hose_name = 'clicksFirehose'
                 click_tracking = {
