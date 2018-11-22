@@ -44,7 +44,7 @@ def askPricing(ad_camp, bids, pub_camp):
     return req.json()
 def postTracking(firehose_name, data):
     req = requests.post(url+'/tracking/firehose_name={}'.format(firehose_name), json=data)
-    print (req)
+    print (req.json())
 def checkData(cate, pub, zipi, maximum):
     if(len(cate) != 0 and len(pub) != 0 and len(zipi) != 0 and len(maximum)):
         try:
@@ -68,12 +68,13 @@ def test():
     return('test')
 
 #http://localhost:8080/category=1&publisher_campaign=88&maximum=3&zip_code=ALL
+@app.route('/category=<category>&publisher_campaign=<publisher_campaign>&zip_code=<zip_code>&maximum=')
 @app.route('/category=<category>&publisher_campaign=<publisher_campaign>&zip_code=<zip_code>&maximum=<maximum>')
-def query(category, publisher_campaign, zip_code, maximum='100'):
+def query(category, publisher_campaign, zip_code, maximum='5'):
     # print(category)
     # print(publisher_campaign)
     # print(zip_code)
-    # print (maximum)
+    print (maximum)
     if(checkData(category, publisher_campaign, zip_code, maximum)):
 
         query_obj = {}
@@ -123,8 +124,6 @@ def query(category, publisher_campaign, zip_code, maximum='100'):
         str_campaign = ",".join(new_campaigns)
         str_bid = ",".join(new_bids)
 
-        if (maximum == None):
-            maximum = 10
         try:
             ranking_result = askRanking(str_campaign, str_bid, maximum)
             print("ranking res: ")
