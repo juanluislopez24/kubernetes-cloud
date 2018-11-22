@@ -43,8 +43,8 @@ def askPricing(ad_camp, bids, pub_camp):
     req = session.get(url+'/pricing/advertiser_campaigns={}&advertiser_campaigns_bids={}&publisher_campaign={}'.format(ad_camp, bids, pub_camp))
     return req.json()
 def postTracking(firehose_name, data):
-    req = requests.post(url+'/tracking/firehose_name={}'.format(firehose_name), json=data)
-    print (req.json())
+    req = requests.post(url+'/tracking/firehose_name={}'.format(firehose_name), data=data)
+    print (req)
 def checkData(cate, pub, zipi, maximum):
     if(len(cate) != 0 and len(pub) != 0 and len(zipi) != 0 and len(maximum)):
         try:
